@@ -10,16 +10,20 @@ package stream;
 import java.io.*;
 import java.net.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ClientThread
 	extends Thread {
 	
 	private Socket clientSocket;
 	ConcurrentHashMap<String,Socket> clientsPorts;
+	ConcurrentLinkedQueue<String> history;
 	
-	ClientThread(Socket s,ConcurrentHashMap<String,Socket> clientsPorts) {
+	
+	ClientThread(Socket s,ConcurrentHashMap<String,Socket> clientsPorts,ConcurrentLinkedQueue<String> history) {
 		this.clientSocket = s;
 		this.clientsPorts=clientsPorts;
+		this.history=history;
 	}
 
  	/**
@@ -36,14 +40,22 @@ public class ClientThread
     		socIn = new BufferedReader(
     			new InputStreamReader(clientSocket.getInputStream()));    
     		//PrintStream socOut = new PrintStream(clientSocket.getOutputStream());
+    		
+    		//hisotrique : on envoie l'historique au client
+    		PrintStream clientsocOut = new PrintStream(clientSocket.getOutputStream());
+    		for(String hstymsg : history)
+    			clientsocOut.println(hstymsg);
+    		
     		while (true) {
     		  String line = socIn.readLine();
     		  //socOut.println(line);
-    		  for(Socket socket : clientsPorts.values())
+    		  for(Socket socket : clientsPorts.values()) //on envoie le message à tous les autres clients 
     		  {
     			  PrintStream socOut = new PrintStream(socket.getOutputStream());
     			  socOut.println(line);
     		  }
+    		  //historique : on stocke le messge (expediteur + contenu)
+    		  history.add(line);
     		}
     	} catch (Exception e) {
         	System.err.println("Error in EchoServer:" + e); 

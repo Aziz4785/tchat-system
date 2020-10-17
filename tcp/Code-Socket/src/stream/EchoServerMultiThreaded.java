@@ -3,6 +3,7 @@ package stream;
 import java.io.*;
 import java.net.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class EchoServerMultiThreaded  {
   
@@ -11,6 +12,8 @@ public class EchoServerMultiThreaded  {
 	* @param EchoServer port
   	* 
   	**/
+	static ConcurrentLinkedQueue<String> history = new ConcurrentLinkedQueue<String>();
+	
 	static ConcurrentHashMap<String,Socket> clientsPorts; 
 	
        public static void main(String args[]){ 
@@ -27,7 +30,7 @@ public class EchoServerMultiThreaded  {
 		while (true) {
 			Socket clientSocket = listenSocket.accept();
 			System.out.println("Connexion from:" + clientSocket.getInetAddress());
-			ClientThread ct = new ClientThread(clientSocket,clientsPorts);
+			ClientThread ct = new ClientThread(clientSocket,clientsPorts,history);
 			ct.start();
 		}
         } catch (Exception e) {
