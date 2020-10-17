@@ -22,7 +22,7 @@ private Socket clientSocket;
     		socIn = new BufferedReader(
     			new InputStreamReader(clientSocket.getInputStream()));    
     		while (true) {
-    			System.out.println("echo: " + socIn.readLine());
+    			System.out.println(socIn.readLine());
     		}
     	} catch (Exception e) {
         	System.err.println("Error in EchoServer:" + e); 

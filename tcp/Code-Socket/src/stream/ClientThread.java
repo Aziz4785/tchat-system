@@ -52,10 +52,10 @@ public class ClientThread
     		  for(Socket socket : clientsPorts.values()) //on envoie le message à tous les autres clients 
     		  {
     			  PrintStream socOut = new PrintStream(socket.getOutputStream());
-    			  socOut.println(line);
+    			  socOut.println(socket.getInetAddress()+"-"+socket.getLocalPort()+" : "+line);
     		  }
     		  //historique : on stocke le messge (expediteur + contenu)
-    		  history.add(line);
+    		  history.add(clientSocket.getInetAddress()+"-"+clientSocket.getLocalPort()+" : "+line);
     		}
     	} catch (Exception e) {
         	System.err.println("Error in EchoServer:" + e); 
