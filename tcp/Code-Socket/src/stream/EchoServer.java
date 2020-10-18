@@ -1,21 +1,12 @@
-/***
- * EchoServer
- * Example of a TCP server
- * Date: 10/01/04
- * Authors:
- */
 
 package stream;
-
+/*
 import java.io.*;
 import java.net.*;
 
 public class EchoServer  {
 
- 	/**
-  	* receives a request from client then sends an echo to the client
-  	* @param clientSocket the client socket
-  	**/
+
 	static void doService(Socket clientSocket) {
     	  try {
     		BufferedReader socIn = null;
@@ -31,11 +22,7 @@ public class EchoServer  {
         }
        }
   
- 	/**
-  	* main method
-	* @param EchoServer port
-  	* 
-  	**/
+
        public static void main(String args[]){ 
         ServerSocket listenSocket;
         
@@ -55,4 +42,4 @@ public class EchoServer  {
         }
       }
   }
-
+*/

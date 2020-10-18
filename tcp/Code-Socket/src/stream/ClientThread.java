@@ -31,7 +31,6 @@ public class ClientThread
   	* @param clientSocket the client socket
   	**/
 	public void run() {
-		System.out.println("on appelle le thread");
     	  try {
     		  System.out.println("on stocke la socket dans la hashmap");
     		  System.out.println(clientSocket.toString()+" -> "+clientSocket);
@@ -47,19 +46,43 @@ public class ClientThread
     			clientsocOut.println(hstymsg);
     		
     		while (true) {
-    		  String line = socIn.readLine();
-    		  //socOut.println(line);
-    		  for(Socket socket : clientsPorts.values()) //on envoie le message à tous les autres clients 
+    		  String line = socIn.readLine(); //on recupere le message du client
+    		  
+    		  //deconnexion:  si cest un message de deconnexion , on ferme la socket dans la hashmap et on la supprime de la hashmap
+    		  if(line.equals("deconnexion"))
     		  {
-    			  PrintStream socOut = new PrintStream(socket.getOutputStream());
-    			  socOut.println(socket.getInetAddress()+"-"+socket.getLocalPort()+" : "+line);
+    			  System.out.println("le client "+ clientSocket +" veut se deconnecter");
+    			  clientsocOut.println("deconnexion"); // on previent le thread qui attend le serveur que le client sest deconnecter
+    			  disconnect(clientSocket);
+    			  break;
     		  }
-    		  //historique : on stocke le messge (expediteur + contenu)
-    		  history.add(clientSocket.getInetAddress()+"-"+clientSocket.getLocalPort()+" : "+line);
+    		  else
+    		  {
+    			//historique : on stocke le messge (expediteur + contenu)
+        		  history.add(clientSocket.getInetAddress()+"-"+clientSocket.getLocalPort()+" : "+line);
+	    		  
+	    		  System.out.println("on va envoyer un message à tous les autres clients : ");
+	    		  for(Socket socket : clientsPorts.values()) //on envoie le message à tous les autres clients 
+	    		  {
+	    			  System.out.println(" -"+socket);
+	    			  PrintStream socOut = new PrintStream(socket.getOutputStream());
+	    			  socOut.println(socket.getInetAddress()+"-"+socket.getLocalPort()+" : "+line);
+	    		  }
+    		  }
+    		  
     		}
     	} catch (Exception e) {
         	System.err.println("Error in EchoServer:" + e); 
         }
        }
+
+	private void disconnect(Socket clientSocket2) throws IOException {
+		System.out.println("on va appeler la fonction close()");
+		//clientSocket2.getOutputStream().close();
+		clientSocket2.close();
+		System.out.println("on eleve la socket de la map");
+		clientsPorts.remove(clientSocket2.toString());
+		System.out.println("la socket "+ clientSocket2 +" est a present fermee");
+	}
   
   }

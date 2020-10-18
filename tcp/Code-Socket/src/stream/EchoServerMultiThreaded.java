@@ -34,7 +34,7 @@ public class EchoServerMultiThreaded  {
 			ct.start();
 		}
         } catch (Exception e) {
-            System.err.println("Error in EchoServer:" + e);
+            System.err.println("Error in EchoServermultithread:" + e);
         }
       }
   }

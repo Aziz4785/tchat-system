@@ -18,6 +18,8 @@ public class EchoClient {
   *  main method
   *  accepts a connection, receives a message from client then sends an echo to the client
   **/
+	static volatile boolean connected;
+	
     public static void main(String[] args) throws IOException {
 
         Socket echoSocket = null;
@@ -37,6 +39,7 @@ public class EchoClient {
 	    		          new InputStreamReader(echoSocket.getInputStream()));    
 	    socOut= new PrintStream(echoSocket.getOutputStream());
 	    stdIn = new BufferedReader(new InputStreamReader(System.in));
+	    connected=true;
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host:" + args[0]);
             System.exit(1);
@@ -49,10 +52,15 @@ public class EchoClient {
         String line;
         ServerMessage servermessage= new ServerMessage(echoSocket);
         servermessage.start();
-        while (true) {
+        while (connected==true) {
         	
         	line=stdIn.readLine();
-        	if (line.equals(".")) break;
+        	if (line.equals("deconnexion"))
+        	{
+        		connected=false;// break; //deconnexion doit envoyer un message au serveur , qui va fermer sa socket 
+        		//deconnexion : on doit prevenir le thread serverMessage qu'on sest deconnecté
+        		//servermessage.stop();
+        	}
         	socOut.println(line);
         }
       socOut.close();
