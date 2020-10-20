@@ -2,14 +2,7 @@
 
 package http.server;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -64,15 +57,19 @@ public class WebServer {
         out.println("");
         // Send the HTML page
         out.println("<H1>Welcome to the Ultra Mini-WebServer</H2>");
-        if(requestParam[0].equals("GET"))
+        switch(requestParam[0])
         {
+        case "GET":
         	handleGET(out,requestParam);
-        }
-        else if(requestParam[0].contentEquals("POST"))
-        {
-        	System.out.println("cest un post");
+        	break; 
+        case "DELETE": 
+        	handleDELETE(requestParam);
+        	break;
+        case "POST":
         	handlePOST(out,br);
+        	break;
         }
+        
         // read the data sent. We basically ignore it,
         // stop reading once a blank line is hit. This
         // blank line signals the end of the client HTTP
@@ -114,11 +111,16 @@ private void handleGET(PrintWriter out,String[] requestParam) throws IOException
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
+}
 	  
-
+private void handleDELETE(String[] requestParam) {
+	File file = new File (requestParam[1].substring(1));
+	file.delete();
+	
+}
 	
 
-}
+
 
 /**
    * Start the application.
