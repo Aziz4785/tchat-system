@@ -3,8 +3,13 @@
 package http.server;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Example program from Chapter 1 Programming Spiders, Bots and Aggregators in
@@ -68,6 +73,9 @@ public class WebServer {
         case "POST":
         	handlePOST(out,br);
         	break;
+        case "HEAD":
+        	handleHEAD(out,requestParam);
+        	break;
         }
         
         // read the data sent. We basically ignore it,
@@ -119,7 +127,24 @@ private void handleDELETE(String[] requestParam) {
 	
 }
 	
+private void handleHEAD(PrintWriter out,String[] requestParam) throws IOException {
+	 
+	try {
+		URL obj = new URL(requestParam[1]);
+	    URLConnection conn = obj.openConnection();
 
+		  
+		    Map<String, List<String>> map = conn.getHeaderFields();
+		    for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+		        out.println("Key : " + entry.getKey() +
+		                 " ,Value : " + entry.getValue());
+		    }
+
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+}
 
 
 /**
