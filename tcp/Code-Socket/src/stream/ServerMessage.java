@@ -11,6 +11,10 @@ private Socket clientSocket;
 	}
 
  	//attend un message du serveur , si il le recoit il l'affiche
+	/**
+	 * le thread ServerMessage va attendre un message en provenance du serveur , une fois recu , il l'affichera dans la console
+	 * 
+	 */
 	public void run() {
     	  try {
     		BufferedReader socIn = null;

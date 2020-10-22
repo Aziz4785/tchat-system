@@ -8,6 +8,7 @@ package stream;
 
 import java.io.*;
 import java.net.*;
+import java.util.LinkedList;
 
 
 
@@ -52,6 +53,8 @@ public class EchoClient {
         String line;
         ServerMessage servermessage= new ServerMessage(echoSocket);
         servermessage.start();
+        
+       
         while (connected==true) {
         	
         	line=stdIn.readLine();
@@ -60,6 +63,16 @@ public class EchoClient {
         		connected=false;// break; //deconnexion doit envoyer un message au serveur , qui va fermer sa socket 
         		//deconnexion : on doit prevenir le thread serverMessage qu'on sest deconnecté
         		//servermessage.stop();
+        	}
+        	else if(line.equals("creer_groupe"))
+        	{
+        		System.out.println("à qui voulez vous envoyer le message ? :veuillez entrez les ip (+ports ?) , appuiez sur 1 si vous avez fini");
+        		
+  		  	}
+        	else if(line.equals("envoyer_a_groupe"))
+        	{
+        		System.out.println("veuillez entrer le numero du groupe : ");//normalement il ya un thread cote server qui des quil recoit "envoyer_a_groupe" , il envoyer les groupes autorisé
+        	
         	}
         	socOut.println(line);
         }
