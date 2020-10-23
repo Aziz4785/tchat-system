@@ -1,8 +1,8 @@
 /***
  * EchoServer
- * Example of a TCP server
- * Date: 10/01/04
- * Authors:
+ * Example of a UDP server
+ * Date: 10/01/20
+ * Authors: Kanoun Aziz & Grevaud Paul
  */
 
 package stream;
@@ -13,13 +13,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.Scanner;
 
+/**
+ * 
+ * des qu'un client se connecte le serveur lui envoie l'historique de la conversation 
+ *
+ */
 public class EchoServerMultiThreaded  {
   
- 	/**
-  	* main method
-	* @param EchoServer port
-  	* 
-  	**/
+ 	
 	 static LinkedList<String> history = new LinkedList<String>();
 	 
 	 static InetAddress groupAddr= null;
@@ -28,7 +29,11 @@ public class EchoServerMultiThreaded  {
  	static MulticastSocket s = null;
 	 BufferedReader stdIn = null;
    BufferedReader socIn = null;
-   
+   /**
+ 	* main method
+	* @param EchoServer port
+ 	* 
+ 	**/
        public static void main(String args[]){ 
 
 	try {

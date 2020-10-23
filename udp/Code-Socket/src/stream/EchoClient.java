@@ -1,8 +1,8 @@
 /***
  * EchoClient
- * Example of a TCP client 
- * Date: 10/01/04
- * Authors:
+ * Example of a UDP client 
+ * Date: 10/01/20
+ * Authors:Kanoun Aziz & Grevaud Paul
  */
 package stream;
 
@@ -17,7 +17,7 @@ public class EchoClient {
  
   /**
   *  main method
-  *  accepts a connection, receives a message from client then sends an echo to the client
+  * le client est dans un groupe avec d'autres clients , mais ses messages passent aussi par le serveur 
   **/
     public static void main(String[] args) throws IOException {
 

@@ -6,6 +6,12 @@
  */
 package stream;
 
+/***
+ * EchoClient
+ * Example of a TCP client
+ * Date: 10/01/20
+ * Authors: Kanoun Aziz & Grevaud Paul
+ */
 import java.io.*;
 import java.net.*;
 import java.util.LinkedList;
@@ -60,26 +66,31 @@ public class EchoClient {
         	line=stdIn.readLine();
         	if (line.equals("deconnexion"))
         	{
-        		connected=false;// break; //deconnexion doit envoyer un message au serveur , qui va fermer sa socket 
-        		//deconnexion : on doit prevenir le thread serverMessage qu'on sest deconnecté
-        		//servermessage.stop();
+        		connected=false;
         	}
         	else if(line.equals("creer_groupe"))
         	{
-        		System.out.println("à qui voulez vous envoyer le message ? :veuillez entrez les ip (+ports ?) , appuiez sur 1 si vous avez fini");
+        		System.out.println("ï¿½ qui voulez vous envoyer le message ? :veuillez entrez le socket.toString() du client , appuiez sur 1 si vous avez fini");
         		
   		  	}
         	else if(line.equals("envoyer_a_groupe"))
         	{
-        		System.out.println("veuillez entrer le numero du groupe : ");//normalement il ya un thread cote server qui des quil recoit "envoyer_a_groupe" , il envoyer les groupes autorisé
+        		System.out.println("veuillez entrer le numero du groupe : ");//normalement il ya un thread cote server qui des quil recoit "envoyer_a_groupe" , il envoyer les groupes autorisï¿½
         	
         	}
         	socOut.println(line);
         }
-      socOut.close();
-      socIn.close();
-      stdIn.close();
-      echoSocket.close();
+      //close
+        try {
+			servermessage.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        socOut.close();
+        socIn.close();
+        stdIn.close();
+        echoSocket.close();
     }
 }
 

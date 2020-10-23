@@ -7,6 +7,13 @@
 
 package stream;
 
+/***
+ * ClientThread
+ * Example of a TCP server
+ * Date: 10/01/20
+ * Authors: Kanoun Aziz & Grevaud Paul
+ */
+
 import java.io.*;
 import java.net.*;
 import java.util.LinkedList;
@@ -23,6 +30,10 @@ public class ClientThread
 	ConcurrentLinkedQueue<String> history;
 	CopyOnWriteArrayList<ConcurrentLinkedQueue<Socket>> groups;
 	ConcurrentHashMap<String,ConcurrentSkipListSet<Integer>> groupsNumber;
+	
+	/**
+	 * le groupe à qui le client veut envoyer un message
+	 */
 	int groupeChoisi;
 	
 	//pour les methodes
@@ -65,7 +76,7 @@ public class ClientThread
     		
     		//hisotrique : on envoie l'historique au client
     		PrintStream clientsocOut = new PrintStream(clientSocket.getOutputStream());
-    		for(String hstymsg : history)
+    		for(String hstymsg : history)  // marche pas pour l'historique des groupes , mais c'est normal , il faut une classe message
     			clientsocOut.println(hstymsg);
     		
     		while (true) {
@@ -98,7 +109,7 @@ public class ClientThread
         		  history.add(clientSocket.getInetAddress()+"-"+clientSocket.getPort()+" : "+line);
 	    		  
 	    		  
-	    		  //for(Socket socket : clientsPorts.values()) //on envoie le message � tous les autres clients , si on veut parler � un groupe , on aura une liste avec toutes les sockets d'un meme groupe
+	    		  //for(Socket socket : clientsPorts.values()) //on envoie le message � tous les autres clients , si on veut parler � un groupe , on aura une liste avec toutes les sockets d'un meme groupe
 	    			for(Socket socket : groups.get(groupeChoisi))
 	    			  
 	    		  {
@@ -113,6 +124,11 @@ public class ClientThread
         }
        }
 
+	/**
+	 * mettra à jour le groupe choisi par le client
+	 * @param socIn inputStream de la socket du client qui veut choisir un groupe
+	 * @throws IOException
+	 */
 	private void choosegroup(BufferedReader socIn) throws IOException {
 		// TODO Auto-generated method stub
 
@@ -120,6 +136,12 @@ public class ClientThread
 		groupeChoisi = Integer.parseInt(groupnbr);
 	}
 
+	/**
+	 * crée une liste avec toutes les sockets rentrées par le client  qui sera stocké dans groups
+	 * met a jour groupsNUmber
+	 * @param socIn inputStream de la socket du client qui veut creer un groupe
+	 * @throws IOException
+	 */
 	private void creategroup(BufferedReader socIn) throws IOException {
 		// TODO Auto-generated method stub
 		 //pour GROUPE 
@@ -140,13 +162,23 @@ public class ClientThread
 				groupsNumber.get(socket.toString()).add(groupID);
 		}
 	}
-
+	/**
+	 * on va fermer la socket entrée en parametre , puis on l'enlevera de toutes les collections 
+	 * @param clientSocket2 correspond à la socket qu'on veut deconnecter
+	 * @throws IOException
+	 */
 	private void disconnect(Socket clientSocket2) throws IOException {
-		System.out.println("on va appeler la fonction close()");
-		//clientSocket2.getOutputStream().close();
 		clientSocket2.close();
-		System.out.println("on eleve la socket de la map");
 		clientsPorts.remove(clientSocket2.toString());
+	
+		//on supprime la socket des groupes
+		for(ConcurrentLinkedQueue<Socket> listsocket : groups)
+		{
+			if(listsocket.contains(clientSocket2))
+			{
+				listsocket.remove(clientSocket2);
+			}
+		}
 		System.out.println("la socket "+ clientSocket2 +" est a present fermee");
 	}
   

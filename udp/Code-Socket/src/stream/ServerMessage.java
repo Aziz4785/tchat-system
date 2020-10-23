@@ -1,8 +1,20 @@
+/***
+ * ServerMessage
+ * Example of a UDP client thread
+ * Date: 10/01/20
+ * Authors:Kanoun Aziz & Grevaud Paul
+ */
 package stream;
 
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+
+/**
+ * des que le client recoit un message du serveur , il l'affiche
+ * 
+ *
+ */
 public class ServerMessage extends Thread {
 	private MulticastSocket clientmulticastSocket;
 	

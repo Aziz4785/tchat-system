@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import javax.imageio.ImageIO;
 /**
- * Example program from Chapter 1 Programming Spiders, Bots and Aggregators in
- * Java Copyright 2001 by Jeff Heaton
  * 
  * WebServer is a very simple web-server. Any request is responded with a very
  * simple web-page.
@@ -62,19 +60,7 @@ public class WebServer {
         OutputStream os = remote.getOutputStream();
         PrintWriter out = new PrintWriter(os);
        
-        // Send the response
-        // Send the headers
-       // out.println("HTTP/1.0 200 OK");
-       // out.println("Content-Type: text/html");
-       // out.println("Content-Type: image/jpeg");
-  
-       // out.println("Server: Bot");
-        // this blank line signals the end of the headers
-        //out.println("");
-        // Send the HTML page
-       // out.println("<H1>Welcome to the Ultra Mini-WebServer</H2>");
-       // out.flush();
-       // remote.close();
+
 
         switch(requestParam[0])
         {
@@ -108,7 +94,12 @@ public class WebServer {
       }
     }
   }
-
+/**
+ * affiche les données du body 
+ * @param out Printwriter associé à la Socket du client
+ * @param br BufferedReader associé à la Socket du client
+ * @throws IOException
+ */
   private void handlePOST(PrintWriter out, BufferedReader br) throws IOException {
 	// TODO Auto-generated method stub
 	  System.out.println("cest un post");
@@ -146,7 +137,14 @@ public class WebServer {
       }
       
   }
-
+/**
+ * en fonction de l'extension de la ressource à chercher , handleGET va appeler la méthode correspondante
+ * 
+ * @param os OutputStream associé à la socket du client
+ * @param out PrintWRITER associé à la socket du client
+ * @param requestParam le premiere ligne de lentete de la requete http
+ * @throws IOException
+ */
 private void handleGET(OutputStream os ,PrintWriter out,String[] requestParam) throws IOException {
 	// TODO Auto-generated method stub
 	String[] imageExt = {"jpeg", "jpg","png"};
@@ -184,26 +182,34 @@ private void handleGET(OutputStream os ,PrintWriter out,String[] requestParam) t
 	  {
 		  System.out.println("on va envoyer une image");
 		 
-		  sendImage(os,file,out);
-		 // sendVideo(os,file,out);
+		  sendImage(os,file,extension);
+		 
 	  }
 	  else if(listVideo.contains(extension))
 	  {
-		  sendVideo(os,file,out);
+		  sendVideo(os,file,out,extension);
 	  }
 	  else if(listAudio.contains(extension))
 	  {
-		  sendAudio(os, file, out);
+		  sendAudio(os, file, out,extension);
+
 	  }
 	  }
 }
 	  
-private void sendImage(OutputStream os, File file, PrintWriter out) throws IOException {
+/**
+ * transforme le fichier en tableau de byte puis l'envoit au client à travers l'outputstream os
+ * @param os OutputStream associé à la socket du client
+ * @param file la ressource à chercher
+ * @param extension l'extension du fichier à chercher
+ * @throws IOException
+ */
+private void sendImage(OutputStream os, File file,String extension) throws IOException {
 	// TODO Auto-generated method stub
 	
 	
 	String head1 ="HTTP/1.0 200 OK\n";
-			String head2="Content-Type: image/jpeg\n";
+			String head2="Content-Type: image/"+extension+"\n";
 			String head3="Server: Bot\n";
 			String head4="\r\n";
     /*out.println("HTTP/1.0 200 OK");
@@ -228,6 +234,13 @@ private void sendImage(OutputStream os, File file, PrintWriter out) throws IOExc
    
 }
 
+/**
+ * 
+ * @param os OutputStream associé à la socket du client
+ * @param file ressource à aller chercher
+ * @param out PrintWRITER associé à la socket du client
+ * @throws IOException
+ */
 private void sendHTML(OutputStream os, File file, PrintWriter out) throws IOException {
 	// TODO Auto-generated method stub
 
@@ -255,10 +268,57 @@ private void sendHTML(OutputStream os, File file, PrintWriter out) throws IOExce
 	}
 }
 
-private void sendVideo(OutputStream os,File myFile,PrintWriter out) throws IOException {
+/**
+ * transforme le fichier en tableau de byte puis l'envoit au client à travers l'outputstream os
+ * 
+ * @param os OutputStream associé à la socket du client
+ * @param myFile ressource à aller chercher
+ * @param out PrintWRITER associé à la socket du client
+ * @param extension l'extension du fichier à chercher
+ * @throws IOException 
+ */
+private void sendVideo(OutputStream os,File myFile,PrintWriter out,String extension) throws IOException {
 	// TODO Auto-generated method stub
 	String head1 ="HTTP/1.0 200 OK\n";
-	String head2="Content-Type: video/mp4\n";
+	String head2="Content-Type: video/"+extension+"\n";
+	String head3="Server: Bot\n";
+	String head4="\r\n";
+	os.write(head1.getBytes());
+	os.write(head2.getBytes());
+	os.write(head3.getBytes());
+	os.write(head4.getBytes());
+     byte [] mybytearray  = new byte [(int)myFile.length()];
+   
+     FileInputStream fis;
+	try {
+		fis = new FileInputStream(myFile);
+		 BufferedInputStream bis = new BufferedInputStream(fis);
+	     bis.read(mybytearray,0,mybytearray.length);
+			os.write(mybytearray,0,mybytearray.length);
+		     os.flush();
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} 
+    
+     
+     System.out.println("Done.");
+}
+
+/**
+ * 
+ * transforme le fichier en tableau de byte puis l'envoit au client à travers l'outputstream os
+ * 
+ * @param os OutputStream associé à la socket du client
+ * @param myFile ressource à aller chercher
+ * @param out PrintWRITER associé à la socket du client
+ * @param extension l'extension du fichier à chercher
+ * @throws IOException 
+ */
+private void sendAudio(OutputStream os,File myFile,PrintWriter out,String extension) throws IOException {
+	// TODO Auto-generated method stub
+	String head1 ="HTTP/1.0 200 OK\n";
+	String head2="Content-Type: audio/"+extension+"\n";
 	String head3="Server: Bot\n";
 	String head4="\r\n";
 os.write(head1.getBytes());
@@ -282,6 +342,7 @@ os.write(head4.getBytes());
      
      System.out.println("Done.");
 }
+
 
 private void sendAudio(OutputStream os,File myFile,PrintWriter out) throws IOException {
 	// TODO Auto-generated method stub
@@ -310,6 +371,7 @@ os.write(head4.getBytes());
      
      System.out.println("Done.");
 }
+
 
 
 private void handleDELETE(String[] requestParam) {
