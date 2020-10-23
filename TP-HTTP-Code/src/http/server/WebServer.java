@@ -61,6 +61,7 @@ public class WebServer {
         PrintWriter out = new PrintWriter(os);
        
 
+
         switch(requestParam[0])
         {
         case "GET":
@@ -191,6 +192,7 @@ private void handleGET(OutputStream os ,PrintWriter out,String[] requestParam) t
 	  else if(listAudio.contains(extension))
 	  {
 		  sendAudio(os, file, out,extension);
+
 	  }
 	  }
 }
@@ -341,10 +343,37 @@ os.write(head4.getBytes());
      System.out.println("Done.");
 }
 
-/**
- * supprime le fichier mentionné dans l'entete
- * @param requestParam l'entete de la requete html
- */
+
+private void sendAudio(OutputStream os,File myFile,PrintWriter out) throws IOException {
+	// TODO Auto-generated method stub
+	String head1 ="HTTP/1.0 200 OK\n";
+	String head2="Content-Type: audio/mp3\n";
+	String head3="Server: Bot\n";
+	String head4="\r\n";
+os.write(head1.getBytes());
+os.write(head2.getBytes());
+os.write(head3.getBytes());
+os.write(head4.getBytes());
+     byte [] mybytearray  = new byte [(int)myFile.length()];
+   
+     FileInputStream fis;
+	try {
+		fis = new FileInputStream(myFile);
+		 BufferedInputStream bis = new BufferedInputStream(fis);
+	     bis.read(mybytearray,0,mybytearray.length);
+			os.write(mybytearray,0,mybytearray.length);
+		     os.flush();
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} 
+    
+     
+     System.out.println("Done.");
+}
+
+
+
 private void handleDELETE(String[] requestParam) {
 	File file = new File (requestParam[1].substring(1));
 	file.delete();
