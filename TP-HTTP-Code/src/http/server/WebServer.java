@@ -75,6 +75,7 @@ public class WebServer {
        // out.println("<H1>Welcome to the Ultra Mini-WebServer</H2>");
        // out.flush();
        // remote.close();
+
         switch(requestParam[0])
         {
         case "GET":
@@ -101,7 +102,9 @@ public class WebServer {
         out.flush();
         remote.close();
       } catch (Exception e) {
+
         System.out.println("Error: " + e);
+
       }
     }
   }
@@ -156,6 +159,15 @@ private void handleGET(OutputStream os ,PrintWriter out,String[] requestParam) t
 	System.out.println("on recoit bien le get");
 	String path = requestParam[1].substring(1);
 	  File file = new File(path);
+	  
+	  if (!file.exists()){
+			System.out.println("-------------ERROR 404-------------");
+			out.println("HTTP/1.0 404 Not Found");
+			out.println("");
+			
+	}
+	  else {
+	
 	  System.out.println("le fichier a chercher : "+path);
 	  FileReader fr;
 	  String extension = "";
@@ -181,13 +193,15 @@ private void handleGET(OutputStream os ,PrintWriter out,String[] requestParam) t
 	  }
 	  else if(listAudio.contains(extension))
 	  {
-		  //sendAudio();
+		  sendAudio(os, file, out);
 	  }
-
+	  }
 }
 	  
 private void sendImage(OutputStream os, File file, PrintWriter out) throws IOException {
 	// TODO Auto-generated method stub
+	
+	
 	String head1 ="HTTP/1.0 200 OK\n";
 			String head2="Content-Type: image/jpeg\n";
 			String head3="Server: Bot\n";
@@ -216,7 +230,11 @@ private void sendImage(OutputStream os, File file, PrintWriter out) throws IOExc
 
 private void sendHTML(OutputStream os, File file, PrintWriter out) throws IOException {
 	// TODO Auto-generated method stub
+
+	
+
 	out.println("HTTP/1.0 200 OK");
+
     out.println("Content-Type: text/html");
     out.println("Server: Bot");
     // this blank line signals the end of the headers
@@ -233,6 +251,7 @@ private void sendHTML(OutputStream os, File file, PrintWriter out) throws IOExce
 	} catch (FileNotFoundException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
+		
 	}
 }
 
@@ -263,6 +282,35 @@ os.write(head4.getBytes());
      
      System.out.println("Done.");
 }
+
+private void sendAudio(OutputStream os,File myFile,PrintWriter out) throws IOException {
+	// TODO Auto-generated method stub
+	String head1 ="HTTP/1.0 200 OK\n";
+	String head2="Content-Type: audio/mp3\n";
+	String head3="Server: Bot\n";
+	String head4="\r\n";
+os.write(head1.getBytes());
+os.write(head2.getBytes());
+os.write(head3.getBytes());
+os.write(head4.getBytes());
+     byte [] mybytearray  = new byte [(int)myFile.length()];
+   
+     FileInputStream fis;
+	try {
+		fis = new FileInputStream(myFile);
+		 BufferedInputStream bis = new BufferedInputStream(fis);
+	     bis.read(mybytearray,0,mybytearray.length);
+			os.write(mybytearray,0,mybytearray.length);
+		     os.flush();
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} 
+    
+     
+     System.out.println("Done.");
+}
+
 
 private void handleDELETE(String[] requestParam) {
 	File file = new File (requestParam[1].substring(1));
