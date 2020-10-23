@@ -1,5 +1,11 @@
 package stream;
 
+/***
+ * ClientThread
+ * Example of a TCP client
+ * Date: 10/01/20
+ * Authors: Kanoun Aziz & Grevaud Paul
+ */
 import java.io.*;
 import java.net.*;
 
@@ -32,5 +38,6 @@ private Socket clientSocket;
         	System.err.println("Error in servermessage:" + e); 
         }
        }
+	
   
 }

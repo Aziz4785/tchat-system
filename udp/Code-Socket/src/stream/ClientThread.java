@@ -23,10 +23,7 @@ public class ClientThread
 		this.history=history;
 	}
 
- 	/**
-  	* receives a request from client then sends an echo to the client
-  	* @param clientSocket the client socket
-  	**/
+ 
 	public void run() {
     	  try {
     		while (true) {
@@ -53,7 +50,7 @@ public class ClientThread
     		    byte[] listData = out.toByteArray();
     		    DatagramPacket historypacket = new DatagramPacket(listData, listData.length, clientAddr, clientPort); 
     		    
-    		    System.out.println("-------------on envoie à : "+clientAddr +"-"+clientPort);
+    		    System.out.println("-------------on envoie ï¿½ : "+clientAddr +"-"+clientPort);
     	   		for(String str1 : history)
     		    {
     		    	System.out.println(str1);
